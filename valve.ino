@@ -44,6 +44,20 @@ void setup() {
 
 }
 
+int getDist(){
+  int dist, duration = 0;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+  dist = duration * 0.034/2;
+  return dist;
+}
+
 void loop() {
   if (Serial.available()){
     if (Serial.read() == '1'){
@@ -55,6 +69,8 @@ void loop() {
       Serial.println("Off");
     }
   }
-  delay(1000);
+  Serial.print("Dist: ");
+  Serial.println(getDist());
+  delay(500);
 
 }
