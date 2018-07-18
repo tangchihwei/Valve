@@ -49,13 +49,5 @@ void loop() {
     }
   }
   delay(1000);
-//  delay(1000);
-//  turnCW();
-//  Serial.println("CW");
-//  delay(3000);
-//  turnCCW();
-//  Serial.println("CCW"); 
-//  delay(3000);
-  
 
 }
