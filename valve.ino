@@ -5,6 +5,7 @@ int stby = 6;
 int pwm = 4;
 int trigPin = 9;
 int echoPin = 10;
+bool valveState;
 
 void turnOff() {
   digitalWrite(pwm, LOW);
@@ -13,6 +14,7 @@ void turnOff() {
   digitalWrite(pwm, HIGH);
   delay(30);
   digitalWrite(pwm, LOW);
+  valveState = false; //off
 }
 
 void turnOn () {
@@ -22,6 +24,7 @@ void turnOn () {
   digitalWrite(pwm, HIGH);
   delay(30);
   digitalWrite(pwm, LOW);
+  valveState = true; //on
   
 }
 
@@ -42,6 +45,8 @@ void setup() {
   digitalWrite(trigPin, LOW);
   Serial.begin(9600);
 
+  turnOff();
+
 }
 
 int getDist(){
@@ -59,18 +64,33 @@ int getDist(){
 }
 
 void loop() {
-  if (Serial.available()){
-    if (Serial.read() == '1'){
-      turnOn();
-      Serial.println("On");
-    }
-    else{
-      turnOff();
-      Serial.println("Off");
-    }
+//  if (Serial.available()){
+//    if (Serial.read() == '1'){
+//      turnOn();
+//      Serial.println("On");
+//    }
+//    else{
+//      turnOff();
+//      Serial.println("Off");
+//    }
+//  }
+  int i = 0;
+  int dist = 0;
+  for (i = 0; i < 10; i ++){
+    dist = getDist() + dist;
+  }
+  dist = dist/10;
+  
+  if (dist >= 50 && valveState == true){
+    turnOff();
+  }
+  else if (dist <50 && valveState == false){
+    turnOn();
   }
   Serial.print("Dist: ");
-  Serial.println(getDist());
+  Serial.print(dist);
+  Serial.print("  Valve is");
+  Serial.println(valveState);
   delay(500);
 
 }
