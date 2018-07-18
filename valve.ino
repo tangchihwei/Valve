@@ -3,6 +3,8 @@ int ain1 = 7;
 int ain2 = 5;
 int stby = 6;
 int pwm = 4;
+int trigPin = 9;
+int echoPin = 10;
 
 void turnOff() {
   digitalWrite(pwm, LOW);
@@ -29,10 +31,15 @@ void setup() {
   pinMode(ain2, OUTPUT);
   pinMode(stby, OUTPUT);
   pinMode(pwm, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
   digitalWrite(ain1, LOW);
   digitalWrite(ain2, LOW);
   digitalWrite(stby, HIGH);
   digitalWrite(pwm, LOW);
+
+  digitalWrite(trigPin, LOW);
   Serial.begin(9600);
 
 }
