@@ -1,12 +1,12 @@
+#include "Adafruit_VL53L0X.h"
 
+Adafruit_VL53L0X lox = Adafruit_VL53L0X();
 int ain1 = 7;
 int ain2 = 5;
 int stby = 6;
 int pwm = 4;
-int trigPin = 9;
-int echoPin = 10;
-int threshold = 90;
 bool valveState;
+int threshold = 45;
 
 void turnOff() {
   digitalWrite(pwm, LOW);
@@ -16,6 +16,7 @@ void turnOff() {
   delay(30);
   digitalWrite(pwm, LOW);
   valveState = false; //off
+  Serial.println("valve off");
 }
 
 void turnOn () {
@@ -26,72 +27,63 @@ void turnOn () {
   delay(30);
   digitalWrite(pwm, LOW);
   valveState = true; //on
-  
+  Serial.println("valve on");
 }
 
 void setup() {
-  // put your setup code here, to run once:
+  Serial.begin(115200);
+
+  // wait until serial port opens for native USB devices
+  while (! Serial) {
+    delay(1);
+  }
+
+  Serial.println("Adafruit VL53L0X test");
+  if (!lox.begin()) {
+    Serial.println(F("Failed to boot VL53L0X"));
+    while (1);
+  }
+  // power
+  Serial.println(F("VL53L0X API Simple Ranging example\n\n"));
+
   pinMode(ain1, OUTPUT);
   pinMode(ain2, OUTPUT);
   pinMode(stby, OUTPUT);
   pinMode(pwm, OUTPUT);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
   digitalWrite(ain1, LOW);
   digitalWrite(ain2, LOW);
   digitalWrite(stby, HIGH);
   digitalWrite(pwm, LOW);
 
-  digitalWrite(trigPin, LOW);
-  Serial.begin(9600);
-
   turnOff();
 
 }
 
-int getDist(){
-  int dist, duration = 0;
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  duration = pulseIn(echoPin, HIGH);
-  dist = duration * 0.034/2;
-  return dist;
-}
 
 void loop() {
-//  if (Serial.available()){
-//    if (Serial.read() == '1'){
-//      turnOn();
-//      Serial.println("On");
-//    }
-//    else{
-//      turnOff();
-//      Serial.println("Off");
-//    }
-//  }
-  int i = 0;
+  VL53L0X_RangingMeasurementData_t measure;
   int dist = 0;
-  for (i = 0; i < 10; i ++){
-    dist = getDist() + dist;
+
+//  Serial.print("Reading a measurement... ");
+  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
+
+  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
+    dist = (measure.RangeMilliMeter) / 10; //cm
+    Serial.print("Distance (cm): "); Serial.println(dist);
+  } else {
+    Serial.println(" out of range ");
   }
-  dist = dist/10;
+    Serial.print("Distance (cm): "); Serial.print(dist);
+    Serial.print(" .  valve state: "); Serial.println(valveState);
+  if (dist <= 10){
+    dist = threshold+15;
+  }
   
-  if (dist >= threshold && valveState == true){
+  if ((dist >= threshold) && valveState == true) {
     turnOff();
   }
-  else if (dist <threshold && valveState == false){
+  else if (dist < threshold && valveState == false) {
     turnOn();
   }
-  Serial.print("Dist: ");
-  Serial.print(dist);
-  Serial.print("  Valve is");
-  Serial.println(valveState);
-  delay(100);
-
+  delay(300);
 }
