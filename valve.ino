@@ -5,6 +5,7 @@ int stby = 6;
 int pwm = 4;
 int trigPin = 9;
 int echoPin = 10;
+int threshold = 90;
 bool valveState;
 
 void turnOff() {
@@ -81,16 +82,16 @@ void loop() {
   }
   dist = dist/10;
   
-  if (dist >= 50 && valveState == true){
+  if (dist >= threshold && valveState == true){
     turnOff();
   }
-  else if (dist <50 && valveState == false){
+  else if (dist <threshold && valveState == false){
     turnOn();
   }
   Serial.print("Dist: ");
   Serial.print(dist);
   Serial.print("  Valve is");
   Serial.println(valveState);
-  delay(500);
+  delay(100);
 
 }
