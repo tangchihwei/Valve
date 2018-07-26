@@ -25,21 +25,35 @@ void setup() {
   table = new Table();
   table.addColumn("Data");
   table.addColumn("Time");
-  table.addColumn("Date");
+  //table.addColumn("Date");
   
-  TableRow newRow = table.addRow();
-  newRow.setString("Data", "2");
-  newRow.setString("Time", "123");
-  newRow.setString("Date", "haha");
-  saveTable(table,filename);
+  //TableRow newRow = table.addRow();
+  //newRow.setString("Data", "2");
+  //String time = hour() + " : " + minute() + " : " + second();
+  //newRow.setString("Time", time);
+  //newRow.setString("Date", "haha");
+  //saveTable(table,filename);
   
 } 
  
 void draw() { 
+  TableRow newRow;
   background(0); 
   text("received: " + inString, 10,50); 
+  newRow = table.addRow();
+  newRow.setString("Data", inString);
+  String time = hour() + " : " + minute() + " : " + second();
+  newRow.setString("Time", time);
+  
 } 
  
 void serialEvent(Serial p) { 
   inString = p.readString(); 
 } 
+
+void keyPressed()
+{
+  //variables used for the filename timestamp
+  saveTable(table, filename);
+  exit();
+}
