@@ -6,7 +6,7 @@ int ain2 = 5;
 int stby = 6;
 int pwm = 4;
 bool valveState;
-int threshold = 45;
+int threshold = 25;
 
 void turnOff() {
   digitalWrite(pwm, LOW);
@@ -73,17 +73,18 @@ void loop() {
   } else {
     Serial.println(" out of range ");
   }
-    Serial.print("Distance (cm): "); Serial.print(dist);
-    Serial.print(" .  valve state: "); Serial.println(valveState);
+//    Serial.print("Distance (cm): "); Serial.print(dist);
+//    Serial.print(" .  valve state: "); Serial.println(valveState);
   if (dist <= 10){
     dist = threshold+15;
   }
-  
+  Serial.print("Distance (cm): "); Serial.print(dist);
+  Serial.print(" .  valve state: "); Serial.println(valveState);
   if ((dist >= threshold) && valveState == true) {
     turnOff();
   }
   else if (dist < threshold && valveState == false) {
     turnOn();
   }
-  delay(300);
+  delay(100);
 }
