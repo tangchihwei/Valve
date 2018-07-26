@@ -1,90 +1,73 @@
-#include "Adafruit_VL53L0X.h"
+/* This example shows how to get single-shot range
+ measurements from the VL53L0X. The sensor can optionally be
+ configured with different ranging profiles, as described in
+ the VL53L0X API user manual, to get better performance for
+ a certain application. This code is based on the four
+ "SingleRanging" examples in the VL53L0X API.
 
-Adafruit_VL53L0X lox = Adafruit_VL53L0X();
-int ain1 = 7;
-int ain2 = 5;
-int stby = 6;
-int pwm = 4;
-bool valveState;
-int threshold = 25;
+ The range readings are in units of mm. */
 
-void turnOff() {
-  digitalWrite(pwm, LOW);
-  digitalWrite(ain1, LOW);
-  digitalWrite(ain2, HIGH); //CCW
-  digitalWrite(pwm, HIGH);
-  delay(30);
-  digitalWrite(pwm, LOW);
-  valveState = false; //off
-  Serial.println("valve off");
+#include <Wire.h>
+#include <VL53L0X.h>
+
+VL53L0X sensor;
+int i = 0;
+
+
+// Uncomment this line to use long range mode. This
+// increases the sensitivity of the sensor and extends its
+// potential range, but increases the likelihood of getting
+// an inaccurate reading because of reflections from objects
+// other than the intended target. It works best in dark
+// conditions.
+
+//#define LONG_RANGE
+
+
+// Uncomment ONE of these two lines to get
+// - higher speed at the cost of lower accuracy OR
+// - higher accuracy at the cost of lower speed
+
+//#define HIGH_SPEED
+//#define HIGH_ACCURACY
+
+
+void setup()
+{
+  Serial.begin(9600);
+  Wire.begin();
+
+  sensor.init();
+  sensor.setTimeout(500);
+
+#if defined LONG_RANGE
+  // lower the return signal rate limit (default is 0.25 MCPS)
+  sensor.setSignalRateLimit(0.1);
+  // increase laser pulse periods (defaults are 14 and 10 PCLKs)
+  sensor.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+  sensor.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+#endif
+
+#if defined HIGH_SPEED
+  // reduce timing budget to 20 ms (default is about 33 ms)
+  sensor.setMeasurementTimingBudget(20000);
+#elif defined HIGH_ACCURACY
+  // increase timing budget to 200 ms
+  sensor.setMeasurementTimingBudget(200000);
+#endif
 }
 
-void turnOn () {
-  digitalWrite(pwm, LOW);
-  digitalWrite(ain2, LOW);
-  digitalWrite(ain1, HIGH); //CW
-  digitalWrite(pwm, HIGH);
-  delay(30);
-  digitalWrite(pwm, LOW);
-  valveState = true; //on
-  Serial.println("valve on");
-}
+void loop()
+{
+  if()
+  Serial.print("time: ");
+  Serial.println(millis());
+  double val = sensor.readRangeSingleMillimeters()/25.4;
+  Serial.print(val);
+  if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
 
-void setup() {
-  Serial.begin(115200);
-
-  // wait until serial port opens for native USB devices
-  while (! Serial) {
-    delay(1);
-  }
-
-  Serial.println("Adafruit VL53L0X test");
-  if (!lox.begin()) {
-    Serial.println(F("Failed to boot VL53L0X"));
-    while (1);
-  }
-  // power
-  Serial.println(F("VL53L0X API Simple Ranging example\n\n"));
-
-  pinMode(ain1, OUTPUT);
-  pinMode(ain2, OUTPUT);
-  pinMode(stby, OUTPUT);
-  pinMode(pwm, OUTPUT);
-  digitalWrite(ain1, LOW);
-  digitalWrite(ain2, LOW);
-  digitalWrite(stby, HIGH);
-  digitalWrite(pwm, LOW);
-
-  turnOff();
-
-}
-
-
-void loop() {
-  VL53L0X_RangingMeasurementData_t measure;
-  int dist = 0;
-
-//  Serial.print("Reading a measurement... ");
-  lox.rangingTest(&measure, false); // pass in 'true' to get debug data printout!
-
-  if (measure.RangeStatus != 4) {  // phase failures have incorrect data
-    dist = (measure.RangeMilliMeter) / 10; //cm
-    Serial.print("Distance (cm): "); Serial.println(dist);
-  } else {
-    Serial.println(" out of range ");
-  }
-//    Serial.print("Distance (cm): "); Serial.print(dist);
-//    Serial.print(" .  valve state: "); Serial.println(valveState);
-  if (dist <= 10){
-    dist = threshold+15;
-  }
-  Serial.print("Distance (cm): "); Serial.print(dist);
-  Serial.print(" .  valve state: "); Serial.println(valveState);
-  if ((dist >= threshold) && valveState == true) {
-    turnOff();
-  }
-  else if (dist < threshold && valveState == false) {
-    turnOn();
-  }
-  delay(100);
+  Serial.println();
+  Serial.print("time: ");
+  Serial.println(millis());
+  delay(10);
 }
