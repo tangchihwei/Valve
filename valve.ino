@@ -1,97 +1,44 @@
+/*
+This example shows how to take simple range measurements with the VL53L1X. The
+range readings are in units of mm.
+*/
 
-int ain1 = 7;
-int ain2 = 5;
-int stby = 6;
-int pwm = 4;
-int trigPin = 9;
-int echoPin = 10;
-int threshold = 90;
-bool valveState;
+#include <Wire.h>
+#include <VL53L1X.h>
 
-void turnOff() {
-  digitalWrite(pwm, LOW);
-  digitalWrite(ain1, LOW);
-  digitalWrite(ain2, HIGH); //CCW
-  digitalWrite(pwm, HIGH);
-  delay(30);
-  digitalWrite(pwm, LOW);
-  valveState = false; //off
-}
+VL53L1X sensor;
 
-void turnOn () {
-  digitalWrite(pwm, LOW);
-  digitalWrite(ain2, LOW);
-  digitalWrite(ain1, HIGH); //CW
-  digitalWrite(pwm, HIGH);
-  delay(30);
-  digitalWrite(pwm, LOW);
-  valveState = true; //on
-  
-}
-
-void setup() {
-  // put your setup code here, to run once:
-  pinMode(ain1, OUTPUT);
-  pinMode(ain2, OUTPUT);
-  pinMode(stby, OUTPUT);
-  pinMode(pwm, OUTPUT);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
-  
-  digitalWrite(ain1, LOW);
-  digitalWrite(ain2, LOW);
-  digitalWrite(stby, HIGH);
-  digitalWrite(pwm, LOW);
-
-  digitalWrite(trigPin, LOW);
+void setup()
+{
   Serial.begin(9600);
+  Wire.begin();
+  Wire.setClock(400000); // use 400 kHz I2C
 
-  turnOff();
-
-}
-
-int getDist(){
-  int dist, duration = 0;
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-
-  duration = pulseIn(echoPin, HIGH);
-  dist = duration * 0.034/2;
-  return dist;
-}
-
-void loop() {
-//  if (Serial.available()){
-//    if (Serial.read() == '1'){
-//      turnOn();
-//      Serial.println("On");
-//    }
-//    else{
-//      turnOff();
-//      Serial.println("Off");
-//    }
-//  }
-  int i = 0;
-  int dist = 0;
-  for (i = 0; i < 10; i ++){
-    dist = getDist() + dist;
+  sensor.setTimeout(500);
+  if (!sensor.init())
+  {
+    Serial.println("Failed to detect and initialize sensor!");
+    while (1);
   }
-  dist = dist/10;
   
-  if (dist >= threshold && valveState == true){
-    turnOff();
-  }
-  else if (dist <threshold && valveState == false){
-    turnOn();
-  }
-  Serial.print("Dist: ");
-  Serial.print(dist);
-  Serial.print("  Valve is");
-  Serial.println(valveState);
-  delay(100);
+  // Use long distance mode and allow up to 50000 us (50 ms) for a measurement.
+  // You can change these settings to adjust the performance of the sensor, but
+  // the minimum timing budget is 20 ms for short distance mode and 33 ms for
+  // medium and long distance modes. See the VL53L1X datasheet for more
+  // information on range and timing limits.
+  sensor.setDistanceMode(VL53L1X::Long);
+  sensor.setMeasurementTimingBudget(50000);
 
+  // Start continuous readings at a rate of one measurement every 50 ms (the
+  // inter-measurement period). This period should be at least as long as the
+  // timing budget.
+  sensor.startContinuous(50);
+}
+
+void loop()
+{
+  Serial.print(sensor.read()/25.4);
+  if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+
+  Serial.println();
 }
