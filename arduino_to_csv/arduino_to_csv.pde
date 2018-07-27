@@ -54,7 +54,7 @@ void serialEvent(Serial p) {
 void keyPressed()
 {
   //variables used for the filename timestamp
-  filename = filename + month() + day() + "_" + hour() + "_" + minute() + "_" + second()+ ".csv";
+  filename = filename + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + second()+ ".csv";
   saveTable(table, filename);
   exit();
 }
