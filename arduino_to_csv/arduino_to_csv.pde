@@ -4,7 +4,7 @@ Serial myPort;    // The serial port
 PFont myFont;     // The display font
 String inString;  // Input string from serial port
 int lf = 10;      // ASCII linefeed 
-int portNum = 11;
+int portNum = 12;
 Table table;
 String filename = "test_tof_gen2_";
 
