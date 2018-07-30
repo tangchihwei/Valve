@@ -54,21 +54,21 @@ void gen1_setup(){
 
 uint16_t gen2_read(){
   static uint16_t val = 0;
-  Serial.print("Gen2:");
+//  Serial.print("Gen2:");
   val = gen2.read();
-  Serial.print(val);
+//  Serial.print(val);
   if (gen2.timeoutOccurred()) { Serial.print("Gen2 TIMEOUT"); }
-  Serial.println();
+//  Serial.println();
   return val;
 }
 
 uint16_t gen1_read(){
   static uint16_t val = 0;
-  Serial.print("Gen1:");
+//  Serial.print("Gen1:");
   val = gen1.readRangeContinuousMillimeters();
-  Serial.print(val);
+//  Serial.print(val);
   if (gen1.timeoutOccurred()) { Serial.print(" Gen 1 TIMEOUT"); }
-  Serial.println();
+//  Serial.println();
   return val;
 }
 
@@ -83,8 +83,6 @@ void setup()
   digitalWrite(gen2_shdn, LOW);
   gen2_setup();
   gen1_setup();
-  
-
   // Start continuous readings at a rate of one measurement every 50 ms (the
   // inter-measurement period). This period should be at least as long as the
   // timing budget.
@@ -92,9 +90,13 @@ void setup()
 
 void loop()
 {
-//  if (Serial.available()){
-//    digitalWrite(gen1_shdn, !digitalRead(gen1_shdn));
-//  }
-  gen1_read();
-  gen2_read();
+  
+  static uint16_t gen1_val = 0;
+  static uint16_t gen2_val = 0;
+  gen1_val = gen1_read();
+  gen2_val = gen2_read();
+  Serial.print("Gen1: ");
+  Serial.print(gen1_val);
+  Serial.print("  Gen2: ");
+  Serial.println(gen2_val);
 }
