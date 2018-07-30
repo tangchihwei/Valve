@@ -21,6 +21,7 @@ void setup() {
   // Open whatever port is the one you're using. 
   myPort = new Serial(this, Serial.list()[portNum], 9600); 
   myPort.bufferUntil(lf); 
+  myPort.clear();
   
   table = new Table();
   table.addColumn("Time");
@@ -38,28 +39,36 @@ void setup() {
 } 
  
 void draw() { 
-  TableRow newRow;
+  //TableRow newRow;
   background(0); 
   textSize(40);
-  //text("received: " + inString, 10,50); 
-  if(inString.charAt(3) == '1'){
-    text("Gen 1: " + inString.substring(5), 10, 50); 
-    newRow = table.addRow();
-    newRow.setString("Gen1", inString.substring(5));
-    String time = hour() + " : " + minute() + " : " + second();
-    newRow.setString("Time", time);
-  }
-  else if(inString.charAt(3) == '2'){
-    text("Gen 2: " + inString.substring(5), 10, 120); 
-    newRow = table.addRow();
-    newRow.setString("Gen2", inString.substring(5));
-    String time = hour() + " : " + minute() + " : " + second();
-    newRow.setString("Time", time);
-  }  
+  text(inString, 10, 50);
+  //String time = hour() + " : " + minute() + " : " + second();
+  //if(inString.charAt(3) == '1'){
+  //  text("Gen 1: " + inString.substring(5), 10, 50); 
+    //newRow = table.addRow();
+    //newRow.setString("Gen1", inString);
+    //newRow.setString("Time", time);
+  //}
+  //else if(inString.charAt(3) == '2'){
+  //  text("Gen 2: " + inString.substring(5), 10, 120); 
+  //  newRow = table.addRow();
+  //  newRow.setString("Gen2", inString.substring(5));
+  //  newRow.setString("Time", time);
+  //}  
 } 
  
 void serialEvent(Serial p) { 
   inString = p.readString(); 
+  
+  TableRow newRow;
+  //text(inString, 10, 50);
+  String time = hour() + " : " + minute() + " : " + second();
+  //if(inString.charAt(3) == '1'){
+  //  text("Gen 1: " + inString.substring(5), 10, 50); 
+    newRow = table.addRow();
+    newRow.setString("Gen1", inString);
+    newRow.setString("Time", time);
 } 
 
 void keyPressed()
