@@ -31,11 +31,11 @@ void gen2_setup(){
   gen2.setDistanceMode(VL53L1X::Long);
   gen2.setMeasurementTimingBudget(50000);
 
-  Serial.print("gen 2 old address: ");
-  Serial.println(gen2.getAddress());
+//  Serial.print("gen 2 old address: ");
+//  Serial.println(gen2.getAddress());
   gen2.setAddress(0x30);
-  Serial.print("gen 2 new address: ");
-  Serial.println(gen2.getAddress());
+//  Serial.print("gen 2 new address: ");
+//  Serial.println(gen2.getAddress());
 
   gen2.startContinuous(50);
 }
@@ -55,7 +55,7 @@ void gen1_setup(){
 uint16_t gen2_read(){
   static uint16_t val = 0;
 //  Serial.print("Gen2:");
-  val = gen2.read();
+  val = gen2.readRangeContinuousMillimeters();
 //  Serial.print(val);
   if (gen2.timeoutOccurred()) { Serial.print("Gen2 TIMEOUT"); }
 //  Serial.println();
@@ -93,10 +93,15 @@ void loop()
   
   static uint16_t gen1_val = 0;
   static uint16_t gen2_val = 0;
-  gen1_val = gen1_read();
+  int t0 = millis();
+//  gen1_val = gen1_read();
+  int t1 = millis();
+  Serial.println(t1-t0);
   gen2_val = gen2_read();
-  Serial.print("Gen1: ");
+  t0 = millis();
+  Serial.println(t0-t1);
+  Serial.print("Gen1:");
   Serial.print(gen1_val);
-  Serial.print("  Gen2: ");
+  Serial.print("Gen2:");
   Serial.println(gen2_val);
 }
