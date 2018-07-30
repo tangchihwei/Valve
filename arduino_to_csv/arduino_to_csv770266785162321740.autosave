@@ -3,11 +3,10 @@ import processing.serial.*;
 Serial myPort;    // The serial port
 PFont myFont;     // The display font
 String inString;  // Input string from serial port
-int lf = 10;      // ASCII linefeed 
+int lf = 20;      // ASCII linefeed 
 int portNum = 19;
 Table table;
 String filename = "test_tof_gen2_";
-boolean newSerial = false;
 
  
 void setup() { 
@@ -41,39 +40,60 @@ void setup() {
  
 void draw() { 
   //TableRow newRow;
-
-  if (newSerial){
-  TableRow newRow;
   background(0); 
-  textSize(40);  
+  textSize(40);
   //text(inString, 10, 50);
-  String time = hour() + " : " + minute() + " : " + second();
-  newSerial = false;
-    
-  if(inString.charAt(3) == '1'){
-    text("Gen 1: " + inString.substring(5), 10, 50); 
-    newRow = table.addRow();
-    newRow.setString("Gen1", inString.substring(5));
-    newRow.setString("Time", time);
-  }
-  else if(inString.charAt(3) == '2'){
-    text("Gen 2: " + inString.substring(5), 10, 120); 
-    newRow = table.addRow();
-    newRow.setString("Gen2", inString.substring(5));
-    newRow.setString("Time", time);
-  }  
-  }
+  //String time = hour() + " : " + minute() + " : " + second();
+  //if(inString.charAt(3) == '1'){
+  //  text("Gen 1: " + inString.substring(5), 10, 50); 
+    //newRow = table.addRow();
+    //newRow.setString("Gen1", inString);
+    //newRow.setString("Time", time);
+  //}
+  //else if(inString.charAt(3) == '2'){
+  //  text("Gen 2: " + inString.substring(5), 10, 120); 
+  //  newRow = table.addRow();
+  //  newRow.setString("Gen2", inString.substring(5));
+  //  newRow.setString("Time", time);
+  //}  
 } 
  
 void serialEvent(Serial p) { 
-  inString = p.readString(); 
-  newSerial = true;
+  inString = p.readStringUntil('\n');
+  if (inString != null){
+    TableRow newRow;
+    String time = hour() + " : " + minute() + " : " + second();
+    if(inString.charAt(3) == '1'){
+      text("Gen 1: " + inString.substring(5), 10, 50); 
+      newRow = table.addRow();
+      newRow.setString("Gen1", inString);
+      newRow.setString("Time", time);
+    }
+    else if(inString.charAt(3) == '2'){
+      text("Gen 2: " + inString.substring(5), 10, 50); 
+      newRow = table.addRow();
+      newRow.setString("Gen2", inString);
+      newRow.setString("Time", time);
+    }
+  }
+  
+  
+  //TableRow newRow;
+  //String time = hour() + " : " + minute() + " : " + second();
+  //if(inString.charAt(3) == '1'){
+  //  text("Gen 1: " + inString.substring(5), 10, 50); 
+  //  newRow = table.addRow();
+  //  newRow.setString("Gen1", inString);
+  //  newRow.setString("Time", time);
+  //}
+  
 } 
 
 void keyPressed()
 {
   //variables used for the filename timestamp
   filename = filename + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + second()+ ".csv";
+  //table.removeRow()
   saveTable(table, filename);
   exit();
 }
