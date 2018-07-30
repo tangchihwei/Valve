@@ -93,15 +93,10 @@ void loop()
   
   static uint16_t gen1_val = 0;
   static uint16_t gen2_val = 0;
-  int t0 = millis();
-//  gen1_val = gen1_read();
-  int t1 = millis();
-  Serial.println(t1-t0);
+  gen1_val = gen1_read();
   gen2_val = gen2_read();
-  t0 = millis();
-  Serial.println(t0-t1);
   Serial.print("Gen1:");
   Serial.print(gen1_val);
-  Serial.print("Gen2:");
+  Serial.print(",Gen2:");
   Serial.println(gen2_val);
 }
