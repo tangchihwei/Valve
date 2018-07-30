@@ -52,20 +52,24 @@ void gen1_setup(){
 
 }
 
-void gen2_read(){
-  Serial.print("Gen 2: ");
-  Serial.print(gen2.read());
+uint16_t gen2_read(){
+  static uint16_t val = 0;
+  Serial.print("Gen2:");
+  val = gen2.read();
+  Serial.print(val);
   if (gen2.timeoutOccurred()) { Serial.print("Gen2 TIMEOUT"); }
-
   Serial.println();
+  return val;
 }
 
-void gen1_read(){
-  Serial.print("Gen 1: ");
-  Serial.print(gen1.readRangeContinuousMillimeters());
+uint16_t gen1_read(){
+  static uint16_t val = 0;
+  Serial.print("Gen1:");
+  val = gen1.readRangeContinuousMillimeters();
+  Serial.print(val);
   if (gen1.timeoutOccurred()) { Serial.print(" Gen 1 TIMEOUT"); }
-
   Serial.println();
+  return val;
 }
 
 void setup()

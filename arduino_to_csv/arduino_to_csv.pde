@@ -4,7 +4,7 @@ Serial myPort;    // The serial port
 PFont myFont;     // The display font
 String inString;  // Input string from serial port
 int lf = 10;      // ASCII linefeed 
-int portNum = 12;
+int portNum = 19;
 Table table;
 String filename = "test_tof_gen2_";
 
@@ -24,7 +24,8 @@ void setup() {
   
   table = new Table();
   table.addColumn("Time");
-  table.addColumn("Data");
+  table.addColumn("Gen1");
+  table.addColumn("Gen2");
   //table.addColumn("Date");
   
   //TableRow newRow = table.addRow();
@@ -39,12 +40,22 @@ void setup() {
 void draw() { 
   TableRow newRow;
   background(0); 
-  text("received: " + inString, 10,50); 
-  newRow = table.addRow();
-  newRow.setString("Data", inString);
-  String time = hour() + " : " + minute() + " : " + second();
-  newRow.setString("Time", time);
-  
+  textSize(40);
+  //text("received: " + inString, 10,50); 
+  if(inString.charAt(3) == '1'){
+    text("Gen 1: " + inString.substring(5), 10, 50); 
+    newRow = table.addRow();
+    newRow.setString("Gen1", inString.substring(5));
+    String time = hour() + " : " + minute() + " : " + second();
+    newRow.setString("Time", time);
+  }
+  else if(inString.charAt(3) == '2'){
+    text("Gen 2: " + inString.substring(5), 10, 120); 
+    newRow = table.addRow();
+    newRow.setString("Gen2", inString.substring(5));
+    String time = hour() + " : " + minute() + " : " + second();
+    newRow.setString("Time", time);
+  }  
 } 
  
 void serialEvent(Serial p) { 
