@@ -46,11 +46,11 @@ void draw() {
     TableRow newRow;
     background(0); 
     textSize(60);  
-  //text(inString, 10, 50);
     String time = hour() + " : " + minute() + " : " + second();
     newSerial = false;
     String[] list = split(inString, ',');
     newRow = table.addRow();
+    print(inString);
     newRow.setString("Gen1", list[0].substring(5));
     newRow.setString("Gen2", list[1].substring(5));
     newRow.setString("Time", time);

@@ -47,7 +47,7 @@ void gen1_setup(){
   
   gen1.init();
   gen1.setTimeout(500);
-  Serial.println("gen1 setup complete");
+//  Serial.println("gen1 setup complete");
   gen1.startContinuous();
 
 }
