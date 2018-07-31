@@ -91,10 +91,10 @@ void setup()
 void loop()
 {
   
-  static uint16_t gen1_val = 0;
-  static uint16_t gen2_val = 0;
-  gen1_val = gen1_read();
-  gen2_val = gen2_read();
+  static double gen1_val = 0;
+  static double gen2_val = 0;
+  gen1_val = gen1_read()/25.4;
+  gen2_val = gen2_read()/25.4;
   Serial.print("Gen1:");
   Serial.print(gen1_val);
   Serial.print(",Gen2:");
