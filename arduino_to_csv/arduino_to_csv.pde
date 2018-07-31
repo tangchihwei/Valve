@@ -10,18 +10,13 @@ String filename = "test_tof_gen2_";
 boolean newSerial = false;
 int lengthToToss = 10;
 int i = 0;
+int startTime = 0;
 
  
 void setup() { 
   size(400,200); 
-  // You'll need to make this font with the Create Font Tool 
-  //myFont = loadFont("ArialMS-18.vlw"); 
-  //textFont(myFont, 18); 
-  // List all the available serial ports: 
   printArray(Serial.list()); 
-  // I know that the first port in the serial list on my mac 
-  // is always my  Keyspan adaptor, so I open Serial.list()[0]. 
-  // Open whatever port is the one you're using. 
+
   myPort = new Serial(this, Serial.list()[portNum], 9600); 
   myPort.bufferUntil(lf); 
   myPort.clear();
@@ -30,32 +25,26 @@ void setup() {
   table.addColumn("Time");
   table.addColumn("Gen1");
   table.addColumn("Gen2");
-  //table.addColumn("Date");
-  
-  //TableRow newRow = table.addRow();
-  //newRow.setString("Data", "2");
-  //String time = hour() + " : " + minute() + " : " + second();
-  //newRow.setString("Time", time);
-  //newRow.setString("Date", "haha");
-  //saveTable(table,filename);
-  
+  startTime = millis();
 } 
  
 void draw() { 
-  //TableRow newRow;
-
   if (newSerial){
     TableRow newRow;
     background(0); 
     textSize(60);  
-    String time = hour() + " : " + minute() + " : " + second();
+    //String time = hour() + " : " + minute() + " : " + second();
+    int time = (millis()-startTime)/1000;
+    int hr = time/3600;
+    int min = time/60;
+    int sec = time%60;
     newSerial = false;
     String[] list = split(inString, ',');
     newRow = table.addRow();
     print(inString);
     newRow.setString("Gen1", list[0].substring(5));
     newRow.setString("Gen2", list[1].substring(5));
-    newRow.setString("Time", time);
+    newRow.setString("Time", str(hr) + " : " + str(min) + " : "+ str(sec));
     text("Gen 1: " + list[0].substring(5), 10, 50); 
     text("Gen 2: " + list[1].substring(5), 10, 150);
 
