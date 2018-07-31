@@ -8,6 +8,8 @@ int portNum = 19;
 Table table;
 String filename = "test_tof_gen2_";
 boolean newSerial = false;
+int lengthToToss = 10;
+int i = 0;
 
  
 void setup() { 
@@ -56,24 +58,19 @@ void draw() {
     newRow.setString("Time", time);
     text("Gen 1: " + list[0].substring(5), 10, 50); 
     text("Gen 2: " + list[1].substring(5), 10, 150);
-  //if(inString.charAt(3) == '1'){
 
-  //  newRow = table.addRow();
-  //  newRow.setString("Gen1", inString.substring(5));
-  //  newRow.setString("Time", time);
-  //}
-  //else if(inString.charAt(3) == '2'){
-    //text("Gen 2: " + inString.substring(5), 10, 120); 
-  //  newRow = table.addRow();
-    //newRow.setString("Gen2", inString.substring(5));
-  //  newRow.setString("Time", time);
-  //}  
   }
 } 
  
 void serialEvent(Serial p) { 
   inString = p.readString(); 
-  newSerial = true;
+  if (i < lengthToToss){
+    i++;
+    p.clear();
+  }
+  else{
+    newSerial = true;
+  }
 } 
 
 void keyPressed()
