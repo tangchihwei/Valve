@@ -45,7 +45,7 @@ void draw() {
   if (newSerial){
     TableRow newRow;
     background(0); 
-    textSize(40);  
+    textSize(60);  
   //text(inString, 10, 50);
     String time = hour() + " : " + minute() + " : " + second();
     newSerial = false;
@@ -54,17 +54,18 @@ void draw() {
     newRow.setString("Gen1", list[0].substring(5));
     newRow.setString("Gen2", list[1].substring(5));
     newRow.setString("Time", time);
-  
+    text("Gen 1: " + list[0].substring(5), 10, 50); 
+    text("Gen 2: " + list[1].substring(5), 10, 150);
   //if(inString.charAt(3) == '1'){
-  //  text("Gen 1: " + inString.substring(5), 10, 50); 
+
   //  newRow = table.addRow();
   //  newRow.setString("Gen1", inString.substring(5));
   //  newRow.setString("Time", time);
   //}
   //else if(inString.charAt(3) == '2'){
-  //  text("Gen 2: " + inString.substring(5), 10, 120); 
+    //text("Gen 2: " + inString.substring(5), 10, 120); 
   //  newRow = table.addRow();
-  //  newRow.setString("Gen2", inString.substring(5));
+    //newRow.setString("Gen2", inString.substring(5));
   //  newRow.setString("Time", time);
   //}  
   }
