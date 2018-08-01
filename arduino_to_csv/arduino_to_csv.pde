@@ -4,7 +4,7 @@ Serial myPort;    // The serial port
 PFont myFont;     // The display font
 String inString;  // Input string from serial port
 int lf = 10;      // ASCII linefeed 
-int portNum = 19;
+int portNum = 21;
 Table table;
 String filename = "test_tof_gen2_";
 boolean newSerial = false;
@@ -14,7 +14,7 @@ int startTime = 0;
 
  
 void setup() { 
-  size(400,200); 
+  size(600,400); 
   printArray(Serial.list()); 
 
   myPort = new Serial(this, Serial.list()[portNum], 9600); 
@@ -39,9 +39,12 @@ void draw() {
     int min = time/60;
     int sec = time%60;
     newSerial = false;
+    textSize(30);
+    text("Time since start: " + str(hr) + " : " + str(min) + " : "+ str(sec), 10, 250);
     String[] list = split(inString, ',');
     newRow = table.addRow();
     print(inString);
+    textSize(60);
     newRow.setString("Gen1", list[0].substring(5));
     newRow.setString("Gen2", list[1].substring(5));
     newRow.setString("Time", str(hr) + " : " + str(min) + " : "+ str(sec));
