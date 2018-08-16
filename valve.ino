@@ -9,9 +9,11 @@ range readings are in units of mm.
 
 VL53L1X gen2;
 VL53L0X gen1;
+VL53L1X gen2_2;
 
 int gen1_shdn = 4;
 int gen2_shdn = 5;
+int gen2_2_shdn = 4;
 
 void gen2_setup(){
  digitalWrite(gen2_shdn, LOW);
@@ -40,6 +42,33 @@ void gen2_setup(){
   gen2.startContinuous(50);
 }
 
+void gen2_2_setup(){
+ digitalWrite(gen2_2_shdn, LOW);
+ delay(10);
+ digitalWrite(gen2_2_shdn, HIGH);
+ gen2_2.setTimeout(500);
+  if (!gen2_2.init())
+  {
+    Serial.println("Failed to detect and initialize gen2_2 sensor!");
+    while (1);
+  }
+  // Use long distance mode and allow up to 50000 us (50 ms) for a measurement.
+  // You can change these settings to adjust the performance of the sensor, but
+  // the minimum timing budget is 20 ms for short distance mode and 33 ms for
+  // medium and long distance modes. See the VL53L1X datasheet for more
+  // information on range and timing limits.
+  gen2_2.setDistanceMode(VL53L1X::Long);
+  gen2_2.setMeasurementTimingBudget(50000);
+
+//  Serial.print("gen 2 old address: ");
+//  Serial.println(gen2.getAddress());
+  // gen2.setAddress(0x30);
+//  Serial.print("gen 2 new address: ");
+//  Serial.println(gen2.getAddress());
+
+  gen2_2.startContinuous(50);
+}
+
 void gen1_setup(){
   digitalWrite(gen1_shdn, LOW);
   delay(10);
@@ -62,6 +91,16 @@ uint16_t gen2_read(){
   return val;
 }
 
+uint16_t gen2_2_read(){
+  static uint16_t val = 0;
+//  Serial.print("Gen2:");
+  val = gen2_2.readRangeContinuousMillimeters();
+//  Serial.print(val);
+  if (gen2_2.timeoutOccurred()) { Serial.print("Gen2_2 TIMEOUT"); }
+//  Serial.println();
+  return val;
+}
+
 uint16_t gen1_read(){
   static uint16_t val = 0;
 //  Serial.print("Gen1:");
@@ -77,12 +116,13 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
   Wire.setClock(400000); // use 400 kHz I2C
-  pinMode(gen1_shdn, OUTPUT);
+  pinMode(gen2_2_shdn, OUTPUT);
   pinMode(gen2_shdn, OUTPUT);
-  digitalWrite(gen1_shdn, LOW);
+  digitalWrite(gen2_2_shdn, LOW);
   digitalWrite(gen2_shdn, LOW);
   gen2_setup();
-  gen1_setup();
+  // gen1_setup();
+  gen2_2_setup();
   // Start continuous readings at a rate of one measurement every 50 ms (the
   // inter-measurement period). This period should be at least as long as the
   // timing budget.
@@ -91,12 +131,12 @@ void setup()
 void loop()
 {
   
-  static double gen1_val = 0;
-  static double gen2_val = 0;
-  gen1_val = gen1_read()/25.4;
-  gen2_val = gen2_read()/25.4;
-  Serial.print("Gen1:");
-  Serial.print(gen1_val);
-  Serial.print(",Gen2:");
-  Serial.println(gen2_val);
+  static double sen1_val = 0;
+  static double sen2_val = 0;
+  sen1_val = gen2_2_read()/25.4;
+  sen2_val = gen2_read()/25.4;
+  Serial.print("Sen1:");
+  Serial.print(sen1_val);
+  Serial.print(",Sen2:");
+  Serial.println(sen2_val);
 }

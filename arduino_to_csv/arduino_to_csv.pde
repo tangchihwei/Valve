@@ -45,11 +45,11 @@ void draw() {
     newRow = table.addRow();
     print(inString);
     textSize(60);
-    newRow.setString("Gen1", list[0].substring(5));
-    newRow.setString("Gen2", list[1].substring(5));
+    newRow.setString("Sen1", list[0].substring(5));
+    newRow.setString("Sen2", list[1].substring(5));
     newRow.setString("Time", str(hr) + " : " + str(min) + " : "+ str(sec));
-    text("Gen 1: " + list[0].substring(5), 10, 50); 
-    text("Gen 2: " + list[1].substring(5), 10, 150);
+    text("Sen 1: " + list[0].substring(5), 10, 50); 
+    text("Sen 2: " + list[1].substring(5), 10, 150);
 
   }
 } 
