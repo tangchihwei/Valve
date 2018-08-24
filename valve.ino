@@ -93,7 +93,7 @@ void gen1_setup(){
 
 uint16_t vshay_read(){
   static uint16_t val = 0;
-
+  val = vcnl4200.getProximity();
   return val;
 }
 
