@@ -14,7 +14,7 @@ int startTime = 0;
 
  
 void setup() { 
-  size(600,400); 
+  size(600,600); 
   printArray(Serial.list()); 
 
   myPort = new Serial(this, Serial.list()[portNum], 9600); 
@@ -47,9 +47,11 @@ void draw() {
     textSize(60);
     newRow.setString("Sen1", list[0].substring(5));
     newRow.setString("Sen2", list[1].substring(5));
+    newRow.setString("Sen3", list[2].substring(5));
     newRow.setString("Time", str(hr) + " : " + str(min) + " : "+ str(sec));
     text("Sen 1: " + list[0].substring(5), 10, 50); 
     text("Sen 2: " + list[1].substring(5), 10, 150);
+    text("Sen 3: " + list[2].substring(5), 10, 300);
 
   }
 } 

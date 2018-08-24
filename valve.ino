@@ -6,14 +6,24 @@ range readings are in units of mm.
 #include <Wire.h>
 #include <VL53L1X.h>
 #include <VL53L0X.h>
+#include "CRC_VCNL4200.h"
 
 VL53L1X gen2;
 VL53L0X gen1;
 VL53L1X gen2_2;
+CRC_VCNL4200 vcnl4200;
 
 int gen1_shdn = 4;
 int gen2_shdn = 5;
 int gen2_2_shdn = 4;
+
+void vshay_setup(){
+  if(vcnl4200.exists()){
+    Serial.println("VCNL4200 found");
+    vcnl4200.initialize();
+    Serial.println("VCNL4200 initialized");
+  }
+}
 
 void gen2_setup(){
  digitalWrite(gen2_shdn, LOW);
@@ -81,6 +91,12 @@ void gen1_setup(){
 
 }
 
+uint16_t vshay_read(){
+  static uint16_t val = 0;
+
+  return val;
+}
+
 uint16_t gen2_read(){
   static uint16_t val = 0;
 //  Serial.print("Gen2:");
@@ -133,10 +149,14 @@ void loop()
   
   static double sen1_val = 0;
   static double sen2_val = 0;
+  static double sen3_val = 0;
   sen1_val = gen2_2_read()/25.4;
   sen2_val = gen2_read()/25.4;
+  sen3_val = vshay_read();
   Serial.print("Sen1:");
   Serial.print(sen1_val);
   Serial.print(",Sen2:");
-  Serial.println(sen2_val);
+  Serial.print(sen2_val);
+  Serial.print(",Sen3:");
+  Serial.println(sen3_val);
 }
