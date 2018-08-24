@@ -23,8 +23,10 @@ void setup() {
   
   table = new Table();
   table.addColumn("Time");
-  table.addColumn("Gen1");
-  table.addColumn("Gen2");
+  table.addColumn("Sen1");
+  table.addColumn("Sen2");
+  table.addColumn("Sen3");
+
   startTime = millis();
 } 
  
