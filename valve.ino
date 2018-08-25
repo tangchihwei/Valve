@@ -6,7 +6,7 @@ range readings are in units of mm.
 #include <Wire.h>
 #include <VL53L1X.h>
 #include <VL53L0X.h>
-#include "CRC_VCNL4200.h"
+#include <CRC_VCNL4200.h>
 
 VL53L1X gen2;
 VL53L0X gen1;
@@ -16,8 +16,9 @@ CRC_VCNL4200 vcnl4200;
 int gen1_shdn = 4;
 int gen2_shdn = 5;
 int gen2_2_shdn = 4;
+int vishay_pin = 7;
 
-void vshay_setup(){
+void vishay_setup(){
   if(vcnl4200.exists()){
     Serial.println("VCNL4200 found");
     vcnl4200.initialize();
@@ -91,7 +92,7 @@ void gen1_setup(){
 
 }
 
-uint16_t vshay_read(){
+uint16_t vishay_read(){
   static uint16_t val = 0;
   val = vcnl4200.getProximity();
   return val;
@@ -139,6 +140,7 @@ void setup()
   gen2_setup();
   // gen1_setup();
   gen2_2_setup();
+  vishay_setup();
   // Start continuous readings at a rate of one measurement every 50 ms (the
   // inter-measurement period). This period should be at least as long as the
   // timing budget.
@@ -152,7 +154,7 @@ void loop()
   static double sen3_val = 0;
   sen1_val = gen2_2_read()/25.4;
   sen2_val = gen2_read()/25.4;
-  sen3_val = vshay_read();
+  sen3_val = vishay_read();
   Serial.print("Sen1:");
   Serial.print(sen1_val);
   Serial.print(",Sen2:");
